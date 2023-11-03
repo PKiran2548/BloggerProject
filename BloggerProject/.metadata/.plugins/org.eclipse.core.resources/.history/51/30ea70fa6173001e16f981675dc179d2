@@ -1,0 +1,53 @@
+package com.bikkadit.configuration;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.bikkadit.security.CustumUserDetailService;
+
+@Configurable
+@EnableWebSecurity
+public class SecurityConfigurartion extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private CustumUserDetailService custumUserDetailService ;
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		
+		http.
+		csrf().disable()
+		.authorizeHttpRequests()
+		.anyRequest()
+		.authenticated()
+		.and()
+		.httpBasic();
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	
+		auth.userDetailsService(this.custumUserDetailService).passwordEncoder(passwordEncoder);
+	}
+	
+	@Bean
+	private PasswordEncoder passwordEncoder() {
+		return BCryptPasswordEncoder() ;
+	}
+
+	private PasswordEncoder BCryptPasswordEncoder() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+
+	
+	
+}
